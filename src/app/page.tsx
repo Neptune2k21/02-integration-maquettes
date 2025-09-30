@@ -1,5 +1,6 @@
 import { BreadCrumbs, SectionContainer, Button, ProductGridLayout, ProductCardLayout } from "@arthur.eudeline/starbucks-tp-kit";
 import { PRODUCTS_CATEGORY_DATA } from "@arthur.eudeline/starbucks-tp-kit/data";
+import Link from "next/link";
 export default function Home() {
   const categories = PRODUCTS_CATEGORY_DATA;
   return (
@@ -13,7 +14,11 @@ export default function Home() {
           {categories.map((category) => (
             <section key={category.id} style={{ marginBottom: "3rem" }}>
               <header style={{ display: "flex", alignItems: "center", marginBottom: "1.5rem" }}>
-                <h2 style={{ fontSize: "2rem", fontWeight: 700, margin: 0 }}>{category.name} ({category.products.length})</h2>
+                <h2 style={{ fontSize: "2rem", fontWeight: 700, margin: 0 }}>
+                  <Link href={`/category/${category.slug}`} style={{ color: "inherit", textDecoration: "none" }}>
+                    {category.name} ({category.products.length})
+                  </Link>
+                </h2>
               </header>
               <ProductGridLayout products={category.products}>
                 {(product) => (
