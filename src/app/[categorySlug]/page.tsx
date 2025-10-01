@@ -9,8 +9,9 @@ const getCategory = cache(async (slug: string) => {
   return PRODUCTS_CATEGORY_DATA.find(cat => cat.slug === slug) ?? null;
 });
 
-export default async function CategoryPage({ params }: { params: { slug: string } }) {
-  const category = await getCategory(params.slug);
+export default async function CategoryPage({ params }: { params: Promise<{ categorySlug: string }> }) {
+  const { categorySlug } = await params;
+  const category = await getCategory(categorySlug);
 
   if (!category) {
     return (
@@ -18,7 +19,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
         <SectionContainer>
           <BreadCrumbs items={[{ label: "Accueil", url: "/" }]} />
           <h2>Catégorie introuvable</h2>
-          <p>Aucune catégorie ne correspond au slug <strong>{params.slug}</strong>.</p>
+          <p>Aucune catégorie ne correspond au slug <strong>{(await params).categorySlug}</strong>.</p>
         </SectionContainer>
       </main>
     );
