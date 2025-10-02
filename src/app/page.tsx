@@ -15,7 +15,7 @@ export default function Home() {
             <section key={category.id} style={{ marginBottom: "3rem" }}>
               <header style={{ display: "flex", alignItems: "center", marginBottom: "1.5rem" }}>
                 <h2 style={{ fontSize: "2rem", fontWeight: 700, margin: 0 }}>
-                  <Link href={`/category/${category.slug}`} style={{ color: "inherit", textDecoration: "none" }}>
+                  <Link href={`/${category.slug}`} style={{ color: "inherit", textDecoration: "none" }}>
                     {category.name} ({category.products.length})
                   </Link>
                 </h2>
