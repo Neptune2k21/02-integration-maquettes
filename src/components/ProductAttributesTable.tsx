@@ -25,7 +25,7 @@ export default function ProductAttributesTable({ attributes }: ProductAttributes
             <tr key={attr.label} className={styles.row}>
               <td className={`${styles.cell} ${styles.leftAlign}`}>{attr.label}</td>
               <td className={`${styles.cell} ${styles.rightAlign}`}>
-                <ProductRating value={attr.rating} />
+                <ProductRating value={attr.rating} icon="circle" />
               </td>
             </tr>
           ))}
