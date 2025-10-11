@@ -15,6 +15,7 @@ import { notFound } from "next/navigation";
 import { Heading } from "@arthur.eudeline/starbucks-tp-kit";
 import { ProductAttribute } from "@/components/ProductAttributesTable";
 import ProductAttributesTable from "@/components/ProductAttributesTable";
+import type { Metadata } from "next";
 
 type Product = ProductData & {
   category: ProductsCategoryData
@@ -41,6 +42,23 @@ const getProduct = cache(async (categorySlug: string, productSlug: string) : Pro
     }
   }
 });
+
+export async function generateMetadata({ params }: { params: { categorySlug: string; productSlug: string } }): Promise<Metadata> {
+  const category = PRODUCTS_CATEGORY_DATA.find(cat => cat.slug === params.categorySlug);
+  const product = category?.products.find(prod => prod.slug === params.productSlug);
+  if (!product) {
+    return {
+      title: "Produit introuvable",
+      description: "Ce produit n'existe pas.",
+    };
+  }
+  return {
+    title: product.name,
+    description: product.desc && product.desc.trim().length > 0
+      ? product.desc
+      : `Succombez pour notre ${product.name} et commandez-le sur notre site !`,
+  };
+}
 
 export default async function ProductPage({ 
   params 
