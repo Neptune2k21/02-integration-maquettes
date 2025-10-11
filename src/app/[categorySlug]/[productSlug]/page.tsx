@@ -47,7 +47,8 @@ export default async function ProductPage({
 }: { 
   params: { categorySlug: string; productSlug: string } 
 }) {
-  const product = await getProduct(params.categorySlug, params.productSlug);
+  const { categorySlug, productSlug } = await params;
+  const product = await getProduct(categorySlug, productSlug);
   if (!product) return notFound();
 
   return (
@@ -56,7 +57,7 @@ export default async function ProductPage({
         <div style={{ paddingTop: "1rem", marginBottom: "2rem" }}>
           <BreadCrumbs items={[
             { label: "Accueil", url: "/" },
-            { label: product.category.name, url: `/category/${product.category.slug}` },
+            { label: product.category.name, url: `/${product.category.slug}` },
             { label: product.name, url: `/${product.category.slug}/${product.slug}` }
           ]} />
         </div>
@@ -208,7 +209,7 @@ export default async function ProductPage({
             }}>
               <Heading as="h2" size="lg">
                 <Link 
-                  href={`/category/${product.category.slug}`} 
+                  href={`/${product.category.slug}`} 
                   style={{ 
                     color: "inherit", 
                     textDecoration: "none",

@@ -30,7 +30,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
       <SectionContainer>
         <BreadCrumbs items={[
           { label: "Accueil", url: "/" },
-          { label: category.name, url: `/category/${category.slug}` }
+          { label: category.name, url: `/${category.slug}` }
         ]} />
         <header style={{ display: "flex", alignItems: "center", marginBottom: "1.5rem" }}>
           <h2 style={{ fontSize: "2rem", fontWeight: 700, margin: 0 }}>

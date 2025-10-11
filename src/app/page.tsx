@@ -1,6 +1,12 @@
 import { BreadCrumbs, SectionContainer, Button, ProductGridLayout, ProductCardLayout } from "@arthur.eudeline/starbucks-tp-kit";
 import { PRODUCTS_CATEGORY_DATA } from "@arthur.eudeline/starbucks-tp-kit/data";
 import Link from "next/link";
+
+export const metadata = {
+  title: "Page d'accueil",
+  description: "Commandez votre boisson préférée",
+};
+
 export default function Home() {
   const categories = PRODUCTS_CATEGORY_DATA;
   return (
