@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import ProductFilters from "./product-filters";
 import { ProductGridLayout, ProductCardLayout, Button } from "@arthur.eudeline/starbucks-tp-kit";
 import type { ProductFiltersResult } from "@/types";
@@ -23,13 +23,30 @@ export default function ProductListWithFilters({ categories }: ProductListWithFi
     search: "",
   });
 
-  const filteredCategories = categories;
+
+  const filteredCategories = useMemo(() => {
+    return categories
+      .map((cat) => {
+        const filteredProducts = cat.products.filter((product) => {
+          const matchesSearch =
+            filters.search === "" ||
+            product.name.toLowerCase().includes((filters.search ?? "").toLowerCase());
+          return matchesSearch;
+        });
+
+        return { ...cat, products: filteredProducts };
+      })
+      .filter(
+        (cat) =>
+          (filters.categoriesSlug.length === 0 ||
+            filters.categoriesSlug.includes(cat.slug)) &&
+          cat.products.length > 0
+      );
+  }, [filters, categories]);
 
   return (
     <div style={{ display: "flex", gap: "2rem" }}>
-      <div style={{ minWidth: "250px" }}>
-        <ProductFilters categories={categories} onChange={setFilters} />
-      </div>
+      <ProductFilters categories={categories} onChange={setFilters} />
 
       <div style={{ flex: 1 }}>
         {filteredCategories.map((category) => (
@@ -45,12 +62,20 @@ export default function ProductListWithFilters({ categories }: ProductListWithFi
                 <ProductCardLayout
                   key={product.id}
                   product={product}
-                  button={<Button style={{ width: "100%" }}>Ajouter au panier</Button>}
+                  button={
+                    <Button style={{ width: "100%" }}>Ajouter au panier</Button>
+                  }
                 />
               )}
             </ProductGridLayout>
           </section>
         ))}
+
+        {filteredCategories.length === 0 && (
+          <p style={{ textAlign: "center", color: "#666", marginTop: "2rem" }}>
+            Aucun produit trouvé pour ces filtres.
+          </p>
+        )}
       </div>
     </div>
   );
