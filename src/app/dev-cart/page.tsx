@@ -4,7 +4,7 @@ import { Button } from "@arthur.eudeline/starbucks-tp-kit/components/button";
 import { ProductCardLayout } from "@arthur.eudeline/starbucks-tp-kit/components/products/product-card-layout";
 import { SectionContainer } from "@arthur.eudeline/starbucks-tp-kit/components/section-container";
 import { ProductCartLine } from "@arthur.eudeline/starbucks-tp-kit";
-import { addLine, useCart, updateLine } from "@/hooks/use-cart";
+import { addLine, useCart, updateLine, clearCart, removeLine } from "@/hooks/use-cart";
 const products = PRODUCTS_CATEGORY_DATA[0].products.slice(0, 3);
 
 
@@ -54,7 +54,7 @@ export default function DevCartPage() {
                 key={line.product.id}
                 product={line.product}
                 qty={line.qty}
-                onDelete={() => {}}
+                onDelete={() => removeLine(line.product.id)}
                 onQtyChange={(qty) => updateLine({ ...line, qty })}
               />
             ))}
@@ -65,7 +65,7 @@ export default function DevCartPage() {
           </div>
           <Button variant="primary" fullWidth>Commander</Button>
         </div>
-        <Button variant={"outline"} fullWidth>Vider le panier</Button>
+        <Button variant={"outline"} fullWidth onClick={clearCart}>Vider le panier</Button>
       </section>
       {/* /Panier */}
     </SectionContainer>

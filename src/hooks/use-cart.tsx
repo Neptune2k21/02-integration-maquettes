@@ -43,3 +43,22 @@ export function updateLine(line: ProductLineData) {
     ),
   }));
 }
+
+/**
+ * Supprime la ligne produit du panier 
+ * 
+ * @param productId 
+ * @returns 
+ */
+export function removeLine(productId: number) {
+  useCart.setState((state) => ({
+    lines: state.lines.filter((line) => line.product.id !== productId),
+  }));
+}
+
+/**
+ * Vide le contenu du panier actuel
+ */
+export function clearCart() {
+  useCart.setState({ lines: [] });
+}
