@@ -4,17 +4,14 @@ import { Button } from "@arthur.eudeline/starbucks-tp-kit/components/button";
 import { ProductCardLayout } from "@arthur.eudeline/starbucks-tp-kit/components/products/product-card-layout";
 import { SectionContainer } from "@arthur.eudeline/starbucks-tp-kit/components/section-container";
 import { ProductCartLine } from "@arthur.eudeline/starbucks-tp-kit";
-import { addLine, useCart, updateLine, clearCart, removeLine } from "@/hooks/use-cart";
+import { addLine, useCart, updateLine, clearCart, removeLine, computeCartTotal } from "@/hooks/use-cart";
 const products = PRODUCTS_CATEGORY_DATA[0].products.slice(0, 3);
 
 
 
 export default function DevCartPage() {
   const lines = useCart((state) => state.lines);
-  const total = lines.reduce(
-    (sum, line) => sum + (line.product.price ?? 0) * line.qty,
-    0
-  );
+  const total = computeCartTotal(lines);
 
   return (
     <SectionContainer

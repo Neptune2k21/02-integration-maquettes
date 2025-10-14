@@ -62,3 +62,18 @@ export function removeLine(productId: number) {
 export function clearCart() {
   useCart.setState({ lines: [] });
 }
+
+
+/**
+ * Calcule le total d'une ligne du panier
+ */
+export function computeLineSubTotal(line: ProductLineData): number {
+  return (line.product.price ?? 0) * line.qty;
+}
+
+/**
+ * Calcule le total du panier
+ */
+export function computeCartTotal(lines: ProductLineData[]): number {
+  return lines.reduce((sum, line) => sum + computeLineSubTotal(line), 0);
+}
