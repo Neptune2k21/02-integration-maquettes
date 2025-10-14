@@ -4,19 +4,18 @@ import { Button } from "@arthur.eudeline/starbucks-tp-kit/components/button";
 import { ProductCardLayout } from "@arthur.eudeline/starbucks-tp-kit/components/products/product-card-layout";
 import { SectionContainer } from "@arthur.eudeline/starbucks-tp-kit/components/section-container";
 import { ProductCartLine } from "@arthur.eudeline/starbucks-tp-kit";
+import { addLine, useCart } from "@/hooks/use-cart";
 const products = PRODUCTS_CATEGORY_DATA[0].products.slice(0, 3);
 
-const cartLines = [
-  { product: products[0], qty: 1 },
-  { product: products[1], qty: 2 },
-];
 
-const total = cartLines.reduce(
-  (sum, line) => sum + (line.product.price ?? 0) * line.qty,
-  0
-);
 
 export default function DevCartPage() {
+  const lines = useCart((state) => state.lines);
+  const total = lines.reduce(
+    (sum, line) => sum + (line.product.price ?? 0) * line.qty,
+    0
+  );
+
   return (
     <SectionContainer
       className="py-36"
@@ -28,7 +27,15 @@ export default function DevCartPage() {
           <ProductCardLayout
             key={product.id}
             product={product}
-            button={<Button variant={"ghost"} fullWidth>Ajouter au panier</Button>}
+            button={
+              <Button
+                variant={"ghost"}
+                fullWidth
+                onClick={() => addLine(product)}
+              >
+                Ajouter au panier
+              </Button>
+            }
           />
         ))}
       </section>
@@ -39,18 +46,18 @@ export default function DevCartPage() {
         <div className="bg-white rounded-xl shadow p-6 space-y-6 border border-gray-100">
           <h2 className="text-xl font-bold mb-4">Votre panier</h2>
           <div className="space-y-4">
-            <ProductCartLine
-              product={cartLines[0].product}
-              qty={cartLines[0].qty}
-              onDelete={() => {}}
-              onQtyChange={() => {}}
-            />
-            <ProductCartLine
-              product={cartLines[1].product}
-              qty={cartLines[1].qty}
-              onDelete={() => {}}
-              onQtyChange={() => {}}
-            />
+            {lines.length === 0 && (
+              <div className="text-gray-500 text-center">Votre panier est vide.</div>
+            )}
+            {lines.map((line) => (
+              <ProductCartLine
+                key={line.product.id}
+                product={line.product}
+                qty={line.qty}
+                onDelete={() => {}}
+                onQtyChange={() => {}}
+              />
+            ))}
           </div>
           <div className="flex justify-between items-center pt-4 border-t">
             <span className="font-semibold text-lg">Total</span>

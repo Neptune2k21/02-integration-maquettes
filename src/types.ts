@@ -1,14 +1,11 @@
+import { ProductData } from "@arthur.eudeline/starbucks-tp-kit";
 export type ProductFiltersResult = {
     categoriesSlug: string[];
     search?: string;
 }
 
 
-export type ProductData = {
-id: string | number;
-name: string;
-price: number;
-};
+
 
 export type ProductLineData = {
 product: ProductData;

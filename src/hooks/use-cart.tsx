@@ -1,6 +1,31 @@
 import { create } from "zustand";
 import type { CartData } from "@/types";
+import { ProductData } from "@arthur.eudeline/starbucks-tp-kit";
 
 export const useCart = create<CartData>(() => ({
   lines: [],
 }));
+
+/**
+ * Ajoute une nouvelle ligne au panier.
+ * Si le produit est déjà dans le panier, augmente la quantité de 1.
+ * 
+ * @param product 
+ */
+export function addLine(product: ProductData) {
+  useCart.setState((state) => {
+    const existingLine = state.lines.find((line) => line.product.id === product.id);
+    if (existingLine) {
+      return {
+        lines: state.lines.map((line) =>
+          line.product.id === product.id
+            ? { ...line, qty: line.qty + 1 }
+            : line
+        ),
+      };
+    }
+    return {
+      lines: [...state.lines, { product, qty: 1 }],
+    };
+  });
+}
