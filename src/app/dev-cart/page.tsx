@@ -4,7 +4,7 @@ import { Button } from "@arthur.eudeline/starbucks-tp-kit/components/button";
 import { ProductCardLayout } from "@arthur.eudeline/starbucks-tp-kit/components/products/product-card-layout";
 import { SectionContainer } from "@arthur.eudeline/starbucks-tp-kit/components/section-container";
 import { ProductCartLine } from "@arthur.eudeline/starbucks-tp-kit";
-import { addLine, useCart } from "@/hooks/use-cart";
+import { addLine, useCart, updateLine } from "@/hooks/use-cart";
 const products = PRODUCTS_CATEGORY_DATA[0].products.slice(0, 3);
 
 
@@ -55,7 +55,7 @@ export default function DevCartPage() {
                 product={line.product}
                 qty={line.qty}
                 onDelete={() => {}}
-                onQtyChange={() => {}}
+                onQtyChange={(qty) => updateLine({ ...line, qty })}
               />
             ))}
           </div>

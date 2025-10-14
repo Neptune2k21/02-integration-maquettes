@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { CartData } from "@/types";
 import { ProductData } from "@arthur.eudeline/starbucks-tp-kit";
+import { ProductLineData } from "@/types";
 
 export const useCart = create<CartData>(() => ({
   lines: [],
@@ -28,4 +29,17 @@ export function addLine(product: ProductData) {
       lines: [...state.lines, { product, qty: 1 }],
     };
   });
+}
+
+/**
+ * Modifie une ligne produit du panier
+ * 
+ * @param line 
+ */
+export function updateLine(line: ProductLineData) {
+  useCart.setState((state) => ({
+    lines: state.lines.map((l) =>
+      l.product.id === line.product.id ? { ...l, qty: line.qty } : l
+    ),
+  }));
 }
