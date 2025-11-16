@@ -3,7 +3,6 @@ import { ProductData, ProductsCategoryData } from "@arthur.eudeline/starbucks-tp
 import { 
   BreadCrumbs, 
   SectionContainer, 
-  Button, 
   ProductGridLayout, 
   ProductCardLayout,
   ProductRating 
@@ -15,6 +14,7 @@ import { notFound } from "next/navigation";
 import { Heading } from "@arthur.eudeline/starbucks-tp-kit";
 import { ProductAttribute } from "@/components/ProductAttributesTable";
 import ProductAttributesTable from "@/components/ProductAttributesTable";
+import AddToCartButton from "@/components/AddToCartButton";
 import type { Metadata } from "next";
 
 type Product = ProductData & {
@@ -173,19 +173,20 @@ export default async function ProductPage({
                 </span>
               </div>
               
-              <Button style={{ 
-                width: "100%", 
-                padding: "1rem 2rem", 
-                fontSize: "1.125rem", 
-                fontWeight: 600,
-                backgroundColor: "#00704A",
-                border: "none",
-                borderRadius: "8px",
-                cursor: "pointer",
-                transition: "all 0.2s"
-              }}>
-                Ajouter au panier
-              </Button>
+              <AddToCartButton 
+                product={product}
+                style={{ 
+                  width: "100%", 
+                  padding: "1rem 2rem", 
+                  fontSize: "1.125rem", 
+                  fontWeight: 600,
+                  backgroundColor: "#00704A",
+                  border: "none",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  transition: "all 0.2s"
+                }}
+              />
             </div>
 
             {/* Attributs du produit */}
@@ -258,18 +259,19 @@ export default async function ProductPage({
                   <ProductCardLayout
                     product={relatedProduct}
                     button={
-                      <Button style={{ 
-                        width: "100%",
-                        padding: "0.75rem",
-                        fontSize: "0.875rem",
-                        backgroundColor: "#00704A",
-                        border: "none",
-                        borderRadius: "6px",
-                        color: "white",
-                        cursor: "pointer"
-                      }}>
-                        Ajouter au panier
-                      </Button>
+                      <AddToCartButton 
+                        product={relatedProduct}
+                        style={{ 
+                          width: "100%",
+                          padding: "0.75rem",
+                          fontSize: "0.875rem",
+                          backgroundColor: "#00704A",
+                          border: "none",
+                          borderRadius: "6px",
+                          color: "white",
+                          cursor: "pointer"
+                        }}
+                      />
                     }
                   />
                 </div>

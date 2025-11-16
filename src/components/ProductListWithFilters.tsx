@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from "react";
 import ProductFilters from "./product-filters";
-import { ProductGridLayout, ProductCardLayout, Button } from "@arthur.eudeline/starbucks-tp-kit";
+import { ProductGridLayout, ProductCardLayout } from "@arthur.eudeline/starbucks-tp-kit";
+import AddToCartButton from "./AddToCartButton";
 import type { ProductFiltersResult } from "@/types";
 
 type Category = {
@@ -63,7 +64,7 @@ export default function ProductListWithFilters({ categories }: ProductListWithFi
                   key={product.id}
                   product={product}
                   button={
-                    <Button style={{ width: "100%" }}>Ajouter au panier</Button>
+                    <AddToCartButton product={product} style={{ width: "100%" }} />
                   }
                 />
               )}
