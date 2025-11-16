@@ -5,6 +5,7 @@ import { ProductCardLayout } from "@arthur.eudeline/starbucks-tp-kit/components/
 import { SectionContainer } from "@arthur.eudeline/starbucks-tp-kit/components/section-container";
 import { addLine } from "@/hooks/use-cart";
 import Cart from "@/components/Cart";
+import CartCounter from "@/components/CartCounter";
 const products = PRODUCTS_CATEGORY_DATA[0].products.slice(0, 3);
 
 export default function DevCartPage() {
@@ -35,6 +36,7 @@ export default function DevCartPage() {
 
       {/* Panier */}
       <Cart />
+      <CartCounter />
       {/* /Panier */}
     </SectionContainer>
   );
