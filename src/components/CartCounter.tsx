@@ -2,7 +2,10 @@ import { useCart } from "@/hooks/use-cart";
 
 export default function CartCounter() {
   console.count("rendu counter");
-  const linesCount = useCart((state) => state.lines.length);
+  const linesCount = useCart(
+    (state) => state.lines.length,
+    (a, b) => a === b 
+  );
 
   return (
     <div className="mb-4 text-lg font-semibold">
