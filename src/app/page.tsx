@@ -1,14 +1,19 @@
 import { SectionContainer, BreadCrumbs } from "@arthur.eudeline/starbucks-tp-kit";
-import { PRODUCTS_CATEGORY_DATA } from "@arthur.eudeline/starbucks-tp-kit/data";
 import ProductListWithFilters from "@/components/ProductListWithFilters";
+import { prisma } from "../../prisma/lib/prisma";
 
 export const metadata = {
   title: "Page d'accueil",
   description: "Commandez de délicieuses boissons préparées avec soin par nos baristas",
 };
 
-export default function Home() {
-  const categories = PRODUCTS_CATEGORY_DATA;
+export default async function Home() {
+  const categories = await prisma.productCategory.findMany({
+    include: {
+      products: true,
+    },
+  });
+
   return (
     <main>
       <SectionContainer>
