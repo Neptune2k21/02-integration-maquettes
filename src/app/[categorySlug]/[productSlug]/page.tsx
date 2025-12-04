@@ -1,25 +1,19 @@
-import { PRODUCTS_CATEGORY_DATA } from "@arthur.eudeline/starbucks-tp-kit/data";
-import { ProductData, ProductsCategoryData } from "@arthur.eudeline/starbucks-tp-kit/types";
+import { prisma } from "../../../../prisma/lib/prisma";
 import { 
   BreadCrumbs, 
   SectionContainer, 
   ProductGridLayout, 
   ProductCardLayout,
-  ProductRating 
+  ProductRating,
+  Heading
 } from "@arthur.eudeline/starbucks-tp-kit";
 import { cache } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Heading } from "@arthur.eudeline/starbucks-tp-kit";
-import { ProductAttribute } from "@/components/ProductAttributesTable";
-import ProductAttributesTable from "@/components/ProductAttributesTable";
 import AddToCartButton from "@/components/AddToCartButton";
+import ProductAttributesTable, { ProductAttribute } from "@/components/ProductAttributesTable";
 import type { Metadata } from "next";
-
-type Product = ProductData & {
-  category: ProductsCategoryData
-}
 
 const attributes: ProductAttribute[] = [
   { label: "Intensité", rating: 3 },
@@ -29,23 +23,39 @@ const attributes: ProductAttribute[] = [
   { label: "Instagramabilité", rating: 5 },
 ];
 
-const getProduct = cache(async (categorySlug: string, productSlug: string) : Promise<Product | null> => {
-  const category = PRODUCTS_CATEGORY_DATA.find(cat => cat.slug === categorySlug);
-  if (!category) return null;
-  const product = category.products.find(prod => prod.slug === productSlug);
-  if (!product) return null;
+// Fonction utilitaire pour récupérer le produit et sa catégorie
+const getProduct = cache(async (categorySlug: string, productSlug: string) => {
+  const product = await prisma.product.findUnique({
+    where: { slug: productSlug },
+    include: {
+      category: {
+        include: {
+          products: true,
+        },
+      },
+    },
+  });
+
+  if (!product || product.category.slug !== categorySlug) {
+    return null;
+  }
+
+  const relatedProducts = product.category.products.filter(
+    (p) => p.slug !== productSlug
+  );
+
   return {
     ...product,
     category: {
-      ...category,
-      products: category.products.filter((prod) => prod.slug !== productSlug),
-    }
-  }
+      ...product.category,
+      products: relatedProducts,
+    },
+  };
 });
 
 export async function generateMetadata({ params }: { params: { categorySlug: string; productSlug: string } }): Promise<Metadata> {
-  const category = PRODUCTS_CATEGORY_DATA.find(cat => cat.slug === params.categorySlug);
-  const product = category?.products.find(prod => prod.slug === params.productSlug);
+  const product = await getProduct(params.categorySlug, params.productSlug);
+
   if (!product) {
     return {
       title: "Produit introuvable",
@@ -60,13 +70,8 @@ export async function generateMetadata({ params }: { params: { categorySlug: str
   };
 }
 
-export default async function ProductPage({ 
-  params 
-}: { 
-  params: { categorySlug: string; productSlug: string } 
-}) {
-  const { categorySlug, productSlug } = await params;
-  const product = await getProduct(categorySlug, productSlug);
+export default async function ProductPage({ params }: { params: { categorySlug: string; productSlug: string } }) {
+  const product = await getProduct(params.categorySlug, params.productSlug);
   if (!product) return notFound();
 
   return (
@@ -265,6 +270,7 @@ export default async function ProductPage({
                           width: "100%",
                           padding: "0.75rem",
                           fontSize: "0.875rem",
+                          fontWeight: 600,
                           backgroundColor: "#00704A",
                           border: "none",
                           borderRadius: "6px",
