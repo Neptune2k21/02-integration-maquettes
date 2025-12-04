@@ -1,19 +1,21 @@
-import { PRODUCTS_CATEGORY_DATA } from "@arthur.eudeline/starbucks-tp-kit/data";
 import { ProductGridLayout, ProductCardLayout, BreadCrumbs, SectionContainer } from "@arthur.eudeline/starbucks-tp-kit";
 import AddToCartButton from "@/components/AddToCartButton";
+import { prisma } from "../../../prisma/lib/prisma";
 import { cache } from "react";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-/**
- * Récupère une catégorie produit à partir de son slug
- */
+
 const getCategory = cache(async (slug: string) => {
-  return PRODUCTS_CATEGORY_DATA.find(cat => cat.slug === slug) ?? null;
+  console.log("getCategory");
+  return await prisma.productCategory.findUnique({
+    where: { slug },
+    include: { products: true },
+  });
 });
 
-export async function generateMetadata({ params }: { params: Promise<{ categorySlug: string }> }): Promise<Metadata> {
-  const { categorySlug } = await params;
-  const category = PRODUCTS_CATEGORY_DATA.find(cat => cat.slug === categorySlug);
-  
+export async function generateMetadata({ params }: { params: { categorySlug: string } }): Promise<Metadata> {
+  const category = await getCategory(params.categorySlug);
+
   if (!category) {
     return {
       title: "Catégorie introuvable",
@@ -27,20 +29,11 @@ export async function generateMetadata({ params }: { params: Promise<{ categoryS
   };
 }
 
-export default async function CategoryPage({ params }: { params: Promise<{ categorySlug: string }> }) {
-  const { categorySlug } = await params;
-  const category = await getCategory(categorySlug);
+export default async function CategoryPage({ params }: { params: { categorySlug: string } }) {
+  const category = await getCategory(params.categorySlug);
 
   if (!category) {
-    return (
-      <main>
-        <SectionContainer>
-          <BreadCrumbs items={[{ label: "Accueil", url: "/" }]} />
-          <h2>Catégorie introuvable</h2>
-          <p>Aucune catégorie ne correspond au slug <strong>{(await params).categorySlug}</strong>.</p>
-        </SectionContainer>
-      </main>
-    );
+    notFound();
   }
 
   return (
