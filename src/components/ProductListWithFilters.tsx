@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect} from "react";
 import ProductFilters from "./product-filters";
 import { ProductGridLayout, ProductCardLayout } from "@arthur.eudeline/starbucks-tp-kit";
 import AddToCartButton from "./AddToCartButton";
@@ -24,58 +24,62 @@ export default function ProductListWithFilters({ categories }: ProductListWithFi
     search: "",
   });
 
+    const [filteredCategories, setFilteredCategories] = useState<Category[]>(categories);
+    const [loading, setLoading] = useState(false);
 
-  const filteredCategories = useMemo(() => {
-    return categories
-      .map((cat) => {
-        const filteredProducts = cat.products.filter((product) => {
-          const matchesSearch =
-            filters.search === "" ||
-            product.name.toLowerCase().includes((filters.search ?? "").toLowerCase());
-          return matchesSearch;
-        });
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (filters.search) params.set("search", filters.search);
+    filters.categoriesSlug.forEach((cat) => params.append("cat", cat));
 
-        return { ...cat, products: filteredProducts };
+    setLoading(true);
+    fetch(`/api/product-filters?${params.toString()}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setFilteredCategories(data.categories);
       })
-      .filter(
-        (cat) =>
-          (filters.categoriesSlug.length === 0 ||
-            filters.categoriesSlug.includes(cat.slug)) &&
-          cat.products.length > 0
-      );
-  }, [filters, categories]);
+      .finally(() => setLoading(false));
+  }, [filters]);
 
   return (
     <div style={{ display: "flex", gap: "2rem" }}>
       <ProductFilters categories={categories} onChange={setFilters} />
 
       <div style={{ flex: 1 }}>
-        {filteredCategories.map((category) => (
-          <section key={category.id} style={{ marginBottom: "3rem" }}>
-            <header style={{ display: "flex", alignItems: "center", marginBottom: "1.5rem" }}>
-              <h2 style={{ fontSize: "2rem", fontWeight: 700, margin: 0 }}>
-                {category.name} ({category.products.length})
-              </h2>
-            </header>
-
-            <ProductGridLayout products={category.products}>
-              {(product) => (
-                <ProductCardLayout
-                  key={product.id}
-                  product={product}
-                  button={
-                    <AddToCartButton product={product} style={{ width: "100%" }} />
-                  }
-                />
-              )}
-            </ProductGridLayout>
-          </section>
-        ))}
-
-        {filteredCategories.length === 0 && (
+        {loading ? (
           <p style={{ textAlign: "center", color: "#666", marginTop: "2rem" }}>
-            Aucun produit trouvé pour ces filtres.
+            Chargement...
           </p>
+        ) : (
+          <>
+            {filteredCategories.map((category) => (
+              <section key={category.id} style={{ marginBottom: "3rem" }}>
+                <header style={{ display: "flex", alignItems: "center", marginBottom: "1.5rem" }}>
+                  <h2 style={{ fontSize: "2rem", fontWeight: 700, margin: 0 }}>
+                    {category.name} ({category.products.length})
+                  </h2>
+                </header>
+
+                <ProductGridLayout products={category.products}>
+                  {(product) => (
+                    <ProductCardLayout
+                      key={product.id}
+                      product={product}
+                      button={
+                        <AddToCartButton product={product} style={{ width: "100%" }} />
+                      }
+                    />
+                  )}
+                </ProductGridLayout>
+              </section>
+            ))}
+
+            {filteredCategories.length === 0 && (
+              <p style={{ textAlign: "center", color: "#666", marginTop: "2rem" }}>
+                Aucun produit trouvé pour ces filtres.
+              </p>
+            )}
+          </>
         )}
       </div>
     </div>
