@@ -1,9 +1,14 @@
 import { useCart, updateLine, removeLine, clearCart, computeCartTotal } from "@/hooks/use-cart";
 import { ProductCartLine, Button } from "@arthur.eudeline/starbucks-tp-kit";
+import { createOrder } from "@/actions/create-orders";
 
 export default function Cart() {
   const lines = useCart((state) => state.lines);
   const total = computeCartTotal(lines);
+  const handleOrder = async() => {
+    await createOrder(lines);
+    clearCart();
+  };
 
   return (
     <section className="flex flex-col gap-4 w-full">
@@ -44,7 +49,7 @@ export default function Cart() {
             </div>
             
             <div className="px-4 py-3 space-y-2">
-              <Button variant="primary" fullWidth>
+              <Button variant="primary" fullWidth onClick={handleOrder}>
                 Commander
               </Button>
               <Button variant="outline" fullWidth onClick={clearCart}>
