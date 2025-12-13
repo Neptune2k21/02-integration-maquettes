@@ -2,9 +2,10 @@
 
 import { MenuBar } from "@arthur.eudeline/starbucks-tp-kit";
 import { Popover } from "@headlessui/react";
-import { ShoppingCart, X } from "@phosphor-icons/react/dist/ssr";
+import { ShoppingCart, X, User } from "@phosphor-icons/react/dist/ssr";
 import Cart from "@/components/Cart";
 import { useCart } from "@/hooks/use-cart";
+import Link from "next/link";
 
 export default function Menu() {
   const linesCount = useCart((state) => state.lines.length);
@@ -12,7 +13,15 @@ export default function Menu() {
   return (
     <MenuBar
       trailing={
-        <div className="w-full flex items-center justify-end pr-2 sm:pr-4 lg:pr-8">
+        <div className="w-full flex items-center justify-end gap-2 pr-2 sm:pr-4 lg:pr-8">
+          {/* Bouton Mon compte */}
+          <Link
+            href="/mon-compte"
+            className="relative inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white shadow-sm px-3 py-2 hover:bg-gray-50 transition"
+          >
+            <User size={22} weight="bold" />
+            <span className="sr-only">Mon compte</span>
+          </Link>
           <Popover className="relative">
             {({ open }) => (
               <>
