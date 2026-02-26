@@ -4,6 +4,7 @@ import "./globals.css";
 import "@arthur.eudeline/starbucks-tp-kit/styles";
 import { Footer } from "@arthur.eudeline/starbucks-tp-kit";
 import Menu from "@/components/Menu";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,9 +38,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-      <Menu />
+        <Menu />
         {children}
-      <Footer />
+        <Footer />
+        <Toaster position="top-right" richColors />
       </body>
     </html>
   );
