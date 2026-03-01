@@ -11,8 +11,11 @@ import {
 import Link from "next/link";
 import { signupSchema, type SignupFormData } from "@/schemas";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
 export default function InscriptionPage() {
+  const router = useRouter();
   const form = useForm<SignupFormData>({
     validate: zodResolver(signupSchema),
     initialValues: {
@@ -22,14 +25,21 @@ export default function InscriptionPage() {
     },
   });
 
-  const handleSubmit = (values: SignupFormData) => {
-    try {
-    console.log("Données d'inscription :", values);
-    toast.success("Inscription réussie !");
-    } catch (error) {
-      console.error("Erreur lors de l'inscription :", error);
-      toast.error("Échec de l'inscription. Veuillez réessayer.");
+  const handleSubmit = async (values: SignupFormData) => {
+    const { error } = await authClient.signUp.email({
+      name: values.name,
+      email: values.email,
+      password: values.password,
+    });
+
+    if (error) {
+      toast.error("L'inscription a échoué.");
+      return;
     }
+
+    toast.success("Inscription réussie !");
+    router.push("/mon-compte");
+    router.refresh(); // <-- important
   };
 
   return (

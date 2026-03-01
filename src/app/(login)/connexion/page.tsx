@@ -11,8 +11,11 @@ import {
 import Link from "next/link";
 import { signinSchema, type SigninFormData } from "@/schemas";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
 export default function ConnexionPage() {
+  const router = useRouter();
   const form = useForm<SigninFormData>({
     validate: zodResolver(signinSchema),
     initialValues: {
@@ -21,14 +24,20 @@ export default function ConnexionPage() {
     },
   });
 
-  const handleSubmit = (values: SigninFormData) => {
-    try {
-    console.log("Données de connexion :", values);
-    toast.success("Connexion réussie !");
-    } catch (error) {
-      console.error("Erreur lors de la connexion :", error);
-      toast.error("Échec de la connexion. Veuillez réessayer.");
+  const handleSubmit = async (values: SigninFormData) => {
+    const { error } = await authClient.signIn.email({
+      email: values.email,
+      password: values.password,
+    });
+
+    if (error) {
+      toast.error("Email ou mot de passe incorrect.");
+      return;
     }
+
+    toast.success("Connexion réussie !");
+    router.push("/mon-compte");
+    router.refresh(); // <-- important pour rafraîchir la session côté serveur
   };
 
   return (

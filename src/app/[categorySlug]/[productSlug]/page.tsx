@@ -53,8 +53,9 @@ const getProduct = cache(async (categorySlug: string, productSlug: string) => {
   };
 });
 
-export async function generateMetadata({ params }: { params: { categorySlug: string; productSlug: string } }): Promise<Metadata> {
-  const product = await getProduct(params.categorySlug, params.productSlug);
+export async function generateMetadata({ params }: { params: Promise<{ categorySlug: string; productSlug: string }> }): Promise<Metadata> {
+  const { categorySlug, productSlug } = await params;
+  const product = await getProduct(categorySlug, productSlug);
 
   if (!product) {
     return {
@@ -70,8 +71,9 @@ export async function generateMetadata({ params }: { params: { categorySlug: str
   };
 }
 
-export default async function ProductPage({ params }: { params: { categorySlug: string; productSlug: string } }) {
-  const product = await getProduct(params.categorySlug, params.productSlug);
+export default async function ProductPage({ params }: { params: Promise<{ categorySlug: string; productSlug: string }> }) {
+  const { categorySlug, productSlug } = await params;
+  const product = await getProduct(categorySlug, productSlug);
   if (!product) return notFound();
 
   return (

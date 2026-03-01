@@ -13,8 +13,9 @@ const getCategory = cache(async (slug: string) => {
   });
 });
 
-export async function generateMetadata({ params }: { params: { categorySlug: string } }): Promise<Metadata> {
-  const category = await getCategory(params.categorySlug);
+export async function generateMetadata({ params }: { params: Promise<{ categorySlug: string }> }): Promise<Metadata> {
+  const { categorySlug } = await params;
+  const category = await getCategory(categorySlug);
 
   if (!category) {
     return {
@@ -29,8 +30,9 @@ export async function generateMetadata({ params }: { params: { categorySlug: str
   };
 }
 
-export default async function CategoryPage({ params }: { params: { categorySlug: string } }) {
-  const category = await getCategory(params.categorySlug);
+export default async function CategoryPage({ params }: { params: Promise<{ categorySlug: string }> }) {
+  const { categorySlug } = await params;
+  const category = await getCategory(categorySlug);
 
   if (!category) {
     notFound();
